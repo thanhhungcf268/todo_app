@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js'
 import Bcrypt from 'bcrypt'
-import data_env from '../src/config/env.config.js'
+import data_env from '../../config/env.config.js'
 
 export const encrypt = async (str) => {
     const salt = await Bcrypt.genSalt(10);

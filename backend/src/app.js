@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import data_env from "./config/env.config.js";
 // import { authenticationWithPassport } from "./middlewares/authentication.js";
 import routers from "./routes/index.js";
-import errorMiddleware from "./middlewares/error.middlewares.js";
+import errorMiddleware from "./shared/middlewares/error.middlewares.js";
 
 const app = express();
 

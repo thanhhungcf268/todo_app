@@ -2,10 +2,8 @@ import redisClient from "../../config/redis.config.js";
 
 import { Role, User, Permission } from "../../models/index.js";
 
-import { generateRefreshToken, generateToken, verifyToken } from "../../../utils/jwt.js";
-import AppError from "../../../utils/appError.js";
-import data_env from "../../config/env.config.js"
-import {encryptDataCrypto} from "../../../utils/encrypt.js";
+import { generateRefreshToken, generateToken, verifyToken } from "../../shared/utils/jwt.js";
+import AppError from "../../shared/utils/appError.js";
 
 export const getPermissionsByRoleId = async (role_id) => {
   const cacheKey = `role_perms:${role_id}`;

@@ -4,8 +4,8 @@ import {
   logInService,
   refreshTokenService,
 } from "./auth.service.js";
-import catchAsync from "../../../utils/catchAsync.js";
-import AppError from "../../../utils/appError.js";
+import catchAsync from "../../shared/utils/catchAsync.js";
+import AppError from "../../shared/utils/appError.js";
 
 export const register = catchAsync(async (req, res) => {
   const { email, password } = req.body;

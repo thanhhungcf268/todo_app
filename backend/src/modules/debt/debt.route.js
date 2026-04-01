@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../../middlewares/authentication.js";
+import { requireAuth } from "../../shared/middlewares/authentication.js";
 import { getListDebt , getListDebtByUser, addDebt} from "./debt.controller.js";
 
 const router = Router();

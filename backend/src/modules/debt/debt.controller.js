@@ -3,7 +3,7 @@ import {
   getAggregateDebt,
   addDebtService,
 } from "./debt.service.js";
-import catchAsync from "../../../utils/catchAsync.js";
+import catchAsync from "../../shared/utils/catchAsync.js";
 
 export const getListDebtByUser = catchAsync(async (req, res) => {
   const { idUser } = req.params;

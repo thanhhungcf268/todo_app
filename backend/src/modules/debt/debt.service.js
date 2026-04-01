@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import sequelize from "../../config/db.config.js";
 import { User, Debt } from "../../models/index.js";
-import appError from "../../../utils/appError.js";
+import appError from "../../shared/utils/appError.js";
 
 export const getAggregateDebt = async (idUser) => {
   const results = await Debt.findAll({

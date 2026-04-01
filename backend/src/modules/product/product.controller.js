@@ -5,7 +5,7 @@ import {
   getPriceProductTimeLineLast,
   updateProductService,
 } from "./product.service.js";
-import catchAsync from "../../../utils/catchAsync.js";
+import catchAsync from "../../shared/utils/catchAsync.js";
 
 export const getProducts = async (req, res) => {
   const { limit, offset, search } = req.query;

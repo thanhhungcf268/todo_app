@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import { Product , FeeTimeLine} from "../../models/index.js";
-import appError from "../../../utils/appError.js";
+import appError from "../../shared/utils/appError.js";
 
 export const getListProducts = async (limit, offset, search) => {
   const results = await Product.findAll({

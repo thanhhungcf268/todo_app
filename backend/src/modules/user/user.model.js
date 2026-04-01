@@ -2,7 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db.config.js";
 import bcrypt from "bcrypt";
 
-import { encrypt } from "../../../utils/encrypt.js";
+import { encrypt } from "../../shared/utils/encrypt.js";
 
 class User extends Model {
   // Hàm này để thiết lập quan hệ với các bảng khác

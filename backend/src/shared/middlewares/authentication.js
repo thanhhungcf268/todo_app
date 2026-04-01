@@ -1,6 +1,6 @@
-import AppError from "../../utils/appError.js";
-import { verifyToken } from "../../utils/jwt.js";
-import { getPermissionsByRoleId } from "../modules/auth/auth.service.js";
+import AppError from "../../shared/utils/appError.js";
+import { verifyToken } from "../../shared/utils/jwt.js";
+import { getPermissionsByRoleId } from "../../modules/auth/auth.service.js";
 
 export const requireAuth = (auth) => {
   return async (req, res, next) => {
