@@ -1,4 +1,4 @@
-import API from "./api";
+import API from "../../services/api";
 
 export const getListDebtService = async (value) => {
     const results = await API.get('/list-debt', {params: value})

@@ -3,9 +3,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 
-import { login } from "../services/authService";
-import useStoreAuth from "../zustand_store/storeAuth";
-import { handleAPI } from "../utils";
+import { login } from "./authService";
+import useStoreAuth from "../../zustand_store/storeAuth";
+import { handleAPI } from "../../utils/handleAPI";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function LogIn() {
     localStorage.clear();
   });
   return (
-    <div className="h-screen bg-gray-900">
+    <div className="bg-[#131f24] text-white h-screen">
       <ToastContainer />
       <div className="flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">

@@ -1,4 +1,4 @@
-const taskQueue = require("../queues/taskQueue");
+import taskQueue from "./task.queue";
 
 taskQueue.process(async (job) => {
   const { task } = job.data;

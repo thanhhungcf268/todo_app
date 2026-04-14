@@ -1,3 +1,4 @@
+import { Suspense, useEffect } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -8,34 +9,44 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-import { backLogIn } from "../utils";
-import useStoreAuth from "../zustand_store/storeAuth";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { backLogIn } from "../../utils";
+import useStoreAuth from "../../zustand_store/storeAuth";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Dashboard() {
-  const pathName = window.location.pathname;
+  const { pathname } = useLocation();
   const permissions = useStoreAuth((state) => state.permissions);
-  const [navigation, setNavigation] = useState([
-    { name: "Dashboard", href: "", current: pathName === "/", hidden: false },
+  const navigation = [
+    { name: "Dashboard", href: "", hidden: false },
     {
       name: "Product",
       href: "/product",
-      current: pathName === "/product",
       hidden: !permissions.includes("view_product"),
     },
     {
       name: "Debt",
       href: "/debt",
-      current: pathName === "/debt",
       hidden: !permissions.includes("view_debt"),
     },
-  ]);
+    {
+      name: "Duolingo",
+      href: "/Duolingo",
+      hidden: !permissions.includes("view_duolingo"),
+    },
+  ];
 
+  useEffect(() => {
+    // Chuyển /product thành Product, /debt thành Debt
+    const pageName = pathname === '/' 
+      ? 'Dashboard' 
+      : pathname.substring(1).charAt(0).toUpperCase() + pathname.slice(2);
+    
+    document.title = `${pageName} | Todo App`;
+  }, [pathname]);
   return (
     <>
       <div>
@@ -71,34 +82,28 @@ export default function Dashboard() {
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
-                    {navigation.map(
-                      (item) =>
+                    {navigation.map((item) => {
+                      // const isCurrent = pathname === item.href;
+                      return (
                         !item.hidden && (
-                          <Link
+                          <NavLink
                             key={item.name}
                             to={item.href}
-                            aria-current={item.current ? "page" : undefined}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-950/50 text-white"
-                                : "text-gray-300 hover:bg-white/5 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium",
-                            )}
-                            onClick={() => {
-                              setNavigation(
-                                navigation.map((value) => {
-                                  return {
-                                    ...value,
-                                    current: item.name === value.name,
-                                  };
-                                }),
-                              );
-                            }}
+                            title={item.name}
+                            className={({ isActive }) =>
+                              classNames(
+                                isActive
+                                  ? "bg-gray-950/50 text-white"
+                                  : "text-gray-300 hover:bg-white/5 hover:text-white",
+                                "rounded-md px-3 py-2 text-sm font-medium",
+                              )
+                            }
                           >
                             {item.name}
-                          </Link>
-                        ),
-                    )}
+                          </NavLink>
+                        )
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -179,9 +184,13 @@ export default function Dashboard() {
           </DisclosurePanel>
         </Disclosure>
       </div>
-      <div>
-        <Outlet />
-      </div>
+      <main>
+        <Suspense
+          fallback={<div className="bg-[#131f24] text-white min-h-screen flex items-center justify-center">Đang tải nội dung...</div>}
+        >
+          <Outlet />
+        </Suspense>
+      </main>
     </>
   );
 }

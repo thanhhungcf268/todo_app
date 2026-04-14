@@ -12,11 +12,20 @@ const useStoreAuth = create(
       name: "p_data", // Tên key trong localStorage
       storage: createJSONStorage(() => ({
         getItem: (name) => {
-          const value = localStorage.getItem(name);
-          return value ? decryptDataCrypto(value) : null // Giải mã trước khi trả về cho Zustand
+          const encryptedValue = localStorage.getItem(name);
+          if (!encryptedValue) return null;
+
+          try {
+            // 1. Giải mã chuỗi từ localStorage
+            const decryptedRaw = decryptDataCrypto(encryptedValue);
+            return JSON.parse(decryptedRaw);
+          } catch (error) {
+            console.error("Lỗi giải mã hoặc parse JSON:", error);
+            return null;
+          }
         },
         setItem: (name, value) => {
-          const encrypted = encryptDataCrypto(value); // Mã hóa chuỗi JSON trước khi lưu
+          const encrypted = encryptDataCrypto(value);
           localStorage.setItem(name, encrypted);
         },
         removeItem: (name) => localStorage.removeItem(name),

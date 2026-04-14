@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { register } from "../services/authService";
+import { register } from "./authService";
 
 export default function Register() {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,7 +18,7 @@ export default function Register() {
     }
   };
   return (
-    <div className="h-screen bg-gray-900">
+    <div className="h-screen bg-[#131f24] text-white">
       <ToastContainer />
       <div className="flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">

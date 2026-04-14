@@ -1,8 +1,12 @@
-import redisClient from "../../config/redis.config.js";
+import redisClient from "../../config/redis.js";
 
 import { Role, User, Permission } from "../../models/index.js";
 
-import { generateRefreshToken, generateToken, verifyToken } from "../../shared/utils/jwt.js";
+import {
+  generateRefreshToken,
+  generateToken,
+  verifyToken,
+} from "../../shared/utils/jwt.js";
 import AppError from "../../shared/utils/appError.js";
 
 export const getPermissionsByRoleId = async (role_id) => {
@@ -12,7 +16,6 @@ export const getPermissionsByRoleId = async (role_id) => {
   if (cachedPerms) {
     return JSON.parse(cachedPerms);
   }
-
   const role = await Role.findByPk(role_id, {
     attributes: ["id"],
     include: [
@@ -101,23 +104,22 @@ export const logInService = async (email, password, clientIp) => {
 };
 
 export const refreshTokenService = async (refreshToken, clientIp) => {
-
   const resultVerifyRefreshToken = verifyToken(refreshToken, true);
   if (!resultVerifyRefreshToken) {
-    throw new AppError("Refresh Token Fail", 401)
+    throw new AppError("Refresh Token Fail", 401);
   }
 
-  const {user_id, client_ip} = resultVerifyRefreshToken
+  const { user_id, client_ip } = resultVerifyRefreshToken;
   if (client_ip != clientIp) {
-    throw new AppError("Refresh Token Fail", 401)
+    throw new AppError("Refresh Token Fail", 401);
   }
-  
-  const {role_id} = await User.findOne({
+
+  const { role_id } = await User.findOne({
     attributes: ["role_id"],
     where: { id: user_id },
   });
 
-    const permissions = await getPermissionsByRoleId(role_id);
+  const permissions = await getPermissionsByRoleId(role_id);
   if (!permissions.length) {
     throw new AppError("User not have permission!", 400);
   }
@@ -125,5 +127,5 @@ export const refreshTokenService = async (refreshToken, clientIp) => {
   // const encryptPermission = encryptDataCrypto(permissions)
   const token = generateToken(user_id, role_id);
 
-  return {token, encryptPermission: permissions}
+  return { token, encryptPermission: permissions };
 };

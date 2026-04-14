@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { addProduct } from "../services/productService";
+import { useEffect, useState, Fragment } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
   PlusIcon,
   CreditCardIcon,
   MagnifyingGlassIcon,
+
 } from "@heroicons/react/24/outline";
 import {
   Dialog,
@@ -15,9 +15,9 @@ import {
 import {
   getListDebtService,
   getListDebtByUserService,
-} from "../services/debtService";
+} from "./debtService";
 
-const DebtComponent = () => {
+const Debt = () => {
   const [listDebt, setListDebt] = useState([]);
   const [offsetState, setOffsetState] = useState(1);
   const [open, setOpen] = useState(false);
@@ -33,17 +33,10 @@ const DebtComponent = () => {
       note: "",
     },
   ]);
-  const [valueEditDebtsOld, setValueEditDebtsOld] = useState({
-    sellingPrice: 1,
-    fee: 1,
-    nameProduct: "",
-    info: "",
-    idProduct: null,
-  });
 
   const [listDebtByUser, setListDebtByUser] = useState([]);
 
-  const [disabledButtonUpdate, setDisabledButtonUpdate] = useState(true);
+  // const [disabledButtonUpdate, setDisabledButtonUpdate] = useState(true);
 
   useEffect(() => {
     const getListDebts = (limit = 10) => {
@@ -87,42 +80,7 @@ const DebtComponent = () => {
         toast.error("Server error");
       });
   };
-  const addProductForm = async () => {
-    const { status, message } = await addProduct({
-      ...valueEditDebts,
-      nameProduct: valueEditDebts.nameProduct.trim(),
-      info: valueEditDebts.info.trim(),
-    });
-    if (status === "success") {
-      setOpen(false);
-      toast.success(message);
-      return;
-    }
-    toast.error(message);
-  };
-  const resetDateFormAddDebt = () => {
-    setValueEditDebts([
-      {
-        nameProduct: "",
-        quantityProduct: 0,
-        priceProduct: 0,
-        debtsPaid: 0,
-        note: "",
-      },
-    ]);
-  };
 
-  const checkFormUpdate = () => {
-    if (
-      valueEditDebts.fee != valueEditDebtsOld.fee ||
-      valueEditDebts.sellingPrice != valueEditDebtsOld.sellingPrice ||
-      valueEditDebts.nameProduct != valueEditDebtsOld.nameProduct ||
-      valueEditDebts.info != valueEditDebtsOld.info
-    ) {
-      return true;
-    }
-    return false;
-  };
   const updateDebt = async () => {
     console.log("Update debt with values:", valueEditDebts);
   };
@@ -145,11 +103,17 @@ const DebtComponent = () => {
     const menu = document.getElementById("dropdownMenu");
     menu.classList.toggle("hidden");
   };
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
   return (
     <>
       <ToastContainer />
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-8">
+      <div className="min-h-screen bg-[#131f24] p-4 sm:p-8 text-white">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -164,7 +128,7 @@ const DebtComponent = () => {
         </div>
 
         {/* Search Section */}
-        <div className="mb-6 bg-gray-800/50 backdrop-blur rounded-xl border border-gray-700/50 p-4">
+        <div className="mb-6 bg-[#1c2b33] rounded-xl border border-white/10 p-4">
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <input
@@ -177,7 +141,8 @@ const DebtComponent = () => {
                   }
                 }}
                 value={search}
-                className="w-full rounded-lg bg-gray-900/50 px-4 py-3 text-base text-white outline-none border border-gray-600/50 placeholder:text-gray-500 focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition"
+                // w-full rounded-lg bg-[#131f24] px-4 py-3 border border-white/10
+                className="w-full rounded-lg bg-[#131f24] px-4 py-3 border border-white/10 placeholder:text-gray-500 focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition"
                 placeholder="Search by name..."
               />
               <MagnifyingGlassIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-gray-500" />
@@ -194,11 +159,11 @@ const DebtComponent = () => {
         </div>
 
         {/* Table Section */}
-        <div className="bg-gray-800/50 backdrop-blur rounded-xl border border-gray-700/50 overflow-hidden">
+        <div className="bg-[#1c2b33] rounded-xl border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-gray-700/50 to-gray-800/50 border-b border-gray-700/50">
+                <tr className="bg-[#21323b] border-b border-white/10">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-100"></th>
 
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-100">
@@ -211,17 +176,17 @@ const DebtComponent = () => {
                     Remaining
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-100">
+                    Paid
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-100">
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {listDebt.map((value) => (
-                  <>
-                    <tr
-                      key={`list-debt-${value.id}`}
-                      className="border-b border-gray-700/30 hover:bg-gray-700/30 transition duration-200"
-                    >
+                  <Fragment key={`list-debt-${value.id}`}>
+                    <tr className="border-b border-gray-700/30 hover:bg-gray-700/30 transition duration-200">
                       <td className="text-sm px-6 py-4">
                         <PlusIcon
                           id="dropdownButton"
@@ -238,17 +203,17 @@ const DebtComponent = () => {
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-semibold">
-                          ${Number(value.totalPrice).toFixed(2)}
+                          {formatCurrency(value.totalPrice)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 font-semibold">
-                          ${Number(value.totalPaid).toFixed(2)}
+                          {formatCurrency(value.totalPaid)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 font-semibold">
-                          ${Number(value.totalRemaining).toFixed(2)}
+                          {formatCurrency(value.totalRemaining)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -269,38 +234,17 @@ const DebtComponent = () => {
                         >
                           Edit
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => {
                             setOpen(true);
                           }}
                           className="cursor-pointer  px-4 sm:ml-2 ml-0 mt-2 py-2 rounded-lg bg-blue-600/30 text-blue-300 hover:bg-blue-600/50 border border-blue-500/50 font-semibold transition"
                         >
                           Add debt
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
-                    {/* <tr>
-                      <div
-                        id="dropdownMenu"
-                        className="absolute right-0 z-10 hidden mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-44 ring-1 ring-black ring-opacity-5"
-                      >
-                        <div className="py-1">
-                          <a
-                            href="#"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Edit
-                          </a>
-                          <a
-                            href="#"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Duplicate
-                          </a>
-                        </div>
-                      </div>
-                    </tr> */}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -344,10 +288,10 @@ const DebtComponent = () => {
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <DialogPanel
                 transition
-                className="relative transform overflow-hidden rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 text-left shadow-2xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-3xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+                className="relative transform overflow-hidden rounded-2xl bg-[#1c2b33] text-left shadow-2xl border border-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-3xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
               >
                 {/* Dialog Header */}
-                <div className="px-6 pt-8 pb-6 sm:p-8 border-b border-gray-700/50">
+                <div className="bg-[#131f24] rounded-2xl p-6 border border-white/5">
                   <div className="flex items-start gap-4">
                     <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500/30 to-green-600/20 border border-green-500/50">
                       <PlusIcon
@@ -375,7 +319,7 @@ const DebtComponent = () => {
                     {valueEditDebts.map((value, index) => {
                       return (
                         <div
-                          key={index}
+                          key={`${index}-edit-debt-item`}
                           className="relative border border-gray-700/50 rounded-2xl p-6 bg-gray-700/30 hover:bg-gray-700/50 hover:border-gray-600/50 transition-all duration-200 group"
                         >
                           <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -545,7 +489,7 @@ const DebtComponent = () => {
                 <div className="bg-gray-900/50 border-t border-gray-700/50 px-6 py-4 sm:flex sm:flex-row-reverse sm:gap-3 sm:px-8">
                   <button
                     type="button"
-                    disabled={disabledButtonUpdate}
+                    // disabled={disabledButtonUpdate}
                     onClick={() => updateDebt()}
                     className="cursor-pointer w-full rounded-lg bg-gradient-to-r from-green-600 to-green-500 px-4 py-3 text-sm font-semibold text-white hover:from-green-500 hover:to-green-400 disabled:opacity-50 disabled:cursor-not-allowed transition sm:w-auto shadow-lg hover:shadow-green-500/25"
                   >
@@ -598,9 +542,9 @@ const DebtComponent = () => {
                         associated debt items and payment history.
                       </p>
                       <div>
-                        {listDebtByUser.map((debt, index) => (
+                        {listDebtByUser.map((debt) => (
                           <div
-                            key={index}
+                            key={debt.id}
                             className="mt-4 text-sm text-gray-300 border border-gray-700/50 rounded-lg p-4 bg-gray-700/30"
                           >
                             <div>Name Product: {debt.nameProductOld}</div>
@@ -628,4 +572,4 @@ const DebtComponent = () => {
     </>
   );
 };
-export default DebtComponent;
+export default Debt;

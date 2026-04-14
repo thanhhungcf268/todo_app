@@ -1,4 +1,4 @@
-import API from "./api";
+import API from "../../services/api";
 
 export const getListProducts = async (info) => {
     const result = await API.get('/list-product', {params: info})
